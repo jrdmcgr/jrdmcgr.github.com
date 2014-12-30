@@ -21,15 +21,73 @@
 			margin: 0.5em 0;
 		}
 
-		.date {
-			font-family: sans-serif;
-			font-size: 0.8em;
-			color: #aaa;
-		}
+        .light {
+            background-color: #ececec;
+            color: #545454;
+        }
 
+        .dark {
+            background-color: #34352e;
+            color: #afafaf;
+        }
+
+        .toggle-theme {
+            position: fixed;
+            bottom: 10px;
+            border: 0 none;
+            height: 1em;
+            width: 1em;
+            outline: 0 none;
+        }
+
+        .dark .toggle-theme {
+            background-color: #ececec;
+        }
+
+        .light .toggle-theme {
+            background-color: #34352e;
+        }
 	</style>
 </head>
-<body>
+<body class="light">
 	<h2>Hello, friends</h2>
 	<p>This site will likely never have any content.</p>
+    <button class="toggle-theme"></button>
+    <script>
+        function toggleTwo(zero, one) {
+            return function (value) {
+                if (value == zero) {
+                    return one;
+                } else if (value == one) {
+                    return zero;
+                }
+            }
+        }
+
+        var theme = {
+            init: function () {
+                this.set(this.get())
+            },
+            get: function () {
+                if (window.localStorage) {
+                    return window.localStorage.getItem('theme');
+                }
+                return 'light'
+            },
+            set: function (theme) {
+                if (window.localStorage) {
+                    window.localStorage.setItem('theme', theme);
+                }
+                document.body.className = theme;
+            },
+            toggle: function () {
+                var toggler = toggleTwo('light', 'dark');
+                this.set(toggler(this.get()));
+            }
+        }
+
+        var button = document.querySelector('.toggle-theme')
+        button.addEventListener('click', theme.toggle.bind(theme));
+        theme.init()
+    </script>
 </html>
