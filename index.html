@@ -21,6 +21,10 @@
 			margin: 0.5em 0;
 		}
 
+        .light, .dark {
+            transition: background-color 0.4s, color 0.4s;
+        }
+
         .light {
             background-color: #ececec;
             color: #545454;
@@ -35,18 +39,27 @@
             position: fixed;
             bottom: 10px;
             border: 0 none;
-            height: 1em;
-            width: 1em;
+            height: 2em;
+            width: 2em;
             outline: 0 none;
         }
 
         .dark .toggle-theme {
             background-color: #ececec;
+            box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+
         }
 
         .light .toggle-theme {
             background-color: #34352e;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
         }
+
+        .light .toggle-theme:active {
+            bottom: 9px;
+            box-shadow: 0 0 0;
+        }
+
 	</style>
 </head>
 <body class="light">
@@ -54,19 +67,10 @@
 	<p>This site will likely never have any content.</p>
     <button class="toggle-theme"></button>
     <script>
-        function toggleTwo(zero, one) {
-            return function (value) {
-                if (value == zero) {
-                    return one;
-                } else if (value == one) {
-                    return zero;
-                }
-            }
-        }
-
         var theme = {
             init: function () {
-                this.set(this.get())
+                this._theme = this.get()
+                this.set(this._theme)
             },
             get: function () {
                 if (window.localStorage) {
@@ -78,16 +82,18 @@
                 if (window.localStorage) {
                     window.localStorage.setItem('theme', theme);
                 }
+                this._theme = theme;
                 document.body.className = theme;
             },
             toggle: function () {
-                var toggler = toggleTwo('light', 'dark');
-                this.set(toggler(this.get()));
+                this.set(this._theme == 'light' ? 'dark' : 'light');
             }
         }
-
-        var button = document.querySelector('.toggle-theme')
-        button.addEventListener('click', theme.toggle.bind(theme));
-        theme.init()
+        theme.init();
+        
+        document.querySelector('.toggle-theme')
+                .addEventListener('click', theme.toggle.bind(theme));
     </script>
 </html>
+
+
